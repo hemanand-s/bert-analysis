@@ -1,20 +1,25 @@
+import sys
+
 from transformers import pipeline
+
+from config import MODEL_DIR
 
 classifier = pipeline(
     "text-classification",
-    model="bert_sentiment_model",
-    tokenizer="bert_sentiment_model"
+    model=MODEL_DIR,
+    tokenizer=MODEL_DIR,
+    truncation=True
 )
 
-text = input("Enter Review: ")
-
-result = classifier(text)
-
-label = result[0]["label"]
-
-if label == "LABEL_0":
-    sentiment = "Negative"
+if len(sys.argv) > 1:
+    text = " ".join(sys.argv[1:])
 else:
-    sentiment = "Positive"
+    text = input("Enter Review: ")
 
-print("\nPredicted Sentiment:", sentiment)
+if not text.strip():
+    sys.exit("No text provided.")
+
+result = classifier(text)[0]
+
+print("\nPredicted Sentiment:", result["label"].capitalize())
+print("Confidence         : {:.2%}".format(result["score"]))

@@ -4,7 +4,7 @@ class SentimentDataset(torch.utils.data.Dataset):
 
     def __init__(self, encodings, labels):
         self.encodings = encodings
-        self.labels = labels
+        self.labels = list(labels)
 
     def __getitem__(self, idx):
 
@@ -13,9 +13,7 @@ class SentimentDataset(torch.utils.data.Dataset):
             for key, val in self.encodings.items()
         }
 
-        item["labels"] = torch.tensor(
-            self.labels.iloc[idx]
-        )
+        item["labels"] = torch.tensor(self.labels[idx])
 
         return item
 
